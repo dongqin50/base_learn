@@ -227,21 +227,22 @@ public class ArithmeticTest {
     public void testRedBlackTreeOrder() throws Exception {
 
 
-        DataInteger[] arrays = {
-                new DataInteger(9),
-                new DataInteger(4),
-                new DataInteger(2),
-                new DataInteger(7),
-                new DataInteger(5),
-                new DataInteger(6),
-                new DataInteger(0),
-                new DataInteger(3)};
+//        DataInteger[] arrays = {
+//                new DataInteger(9),
+//                new DataInteger(4),
+//                new DataInteger(2),
+//                new DataInteger(7),
+//                new DataInteger(5),
+//                new DataInteger(6),
+//                new DataInteger(0),
+//                new DataInteger(3)};
+
 //        int[] arrays = RandomUtils.createRandomArray(10);
 
 //        int num = arrays[0];
-
+        Integer[] arrays = {9,4,2,7,5,6,0,3};
         long start = System.currentTimeMillis();
-        RedBlackTree<DataInteger> tree = new RedBlackTree<>();
+        RedBlackTree<Integer> tree = new RedBlackTree<>();
         tree.generaTree(arrays);
         System.out.println("\n--------- RedBlackTreeOrder ---------- " + (System.currentTimeMillis() - start)  );
 

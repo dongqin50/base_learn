@@ -5,6 +5,10 @@ import com.zy.java_base.arithmetic.factory.TreeNode;
 
 import java.util.Arrays;
 
+/**
+ * 2020/5/13 花费时间 12小时
+ * @param <T>
+ */
 public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
 
     private RedBlackTreeNode<T> mRoot;
@@ -16,41 +20,31 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
 
         //插入一个结点，默认为红色
 
-        for(Object t : array){
-            RedBlackTreeNode<T> node = createTreeNode((T)t);
+        for(T t : array){
+            RedBlackTreeNode<T> node = createTreeNode(t);
             insertTreeNode(mRoot,node);
             printTreeNode(mRoot);
-            System.out.println("");
+            System.out.println(" ");
         }
 
         return mRoot;
     }
-//
-//    private void d(RedBlackTreeNode<T> node){
-//
-//        RedBlackTreeNode<T> parent = (RedBlackTreeNode<T>) node.parent;
-//
-//        if(parent != null && parent.color == RedBlackTreeNode.COLOR_RED){
-//            //右结点
-//            if(node.compareTo(parent.value) > 0){
-//
-//
-//
-//            //左结点
-//            }else {
-//
-//            }
-//
-//
-//        }
-//    }
 
-    private void printTreeNode(TreeNode root){
+
+    private void printTreeNode(RedBlackTreeNode<T> root){
         if(root == null) return;
-        System.out.print(root.value.toString() +" , " );
-        printTreeNode(root.left);
-        printTreeNode(root.right);
+        System.out.print(root.value.toString() +(root.color == RedBlackTreeNode.COLOR_BLACK?"-black":"-red") +" , "   );
+        printTreeNode((RedBlackTreeNode<T>) root.left);
+        printTreeNode((RedBlackTreeNode<T>) root.right);
     }
+
+//
+//    private void printTreeNode(TreeNode root){
+//        if(root == null) return;
+//        System.out.print(root.value.toString() +" , " );
+//        printTreeNode(root.left);
+//        printTreeNode(root.right);
+//    }
 
     private RedBlackTreeNode<T> createTreeNode(T value){
 
@@ -76,6 +70,7 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
                 }else {
                     root.right = node;
                     node.parent = root;
+                    adjustStructure((RedBlackTreeNode<T>) node.parent,node);
                 }
             }else {
                 if(root.left != null){
@@ -83,176 +78,63 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
                 }else {
                     root.left = node;
                     node.parent = root;
+                    adjustStructure((RedBlackTreeNode<T>) node.parent,node);
                 }
             }
-            adjustStructure((RedBlackTreeNode<T>) node.parent,node);
         }
-
     }
 
-    private void adjustStructure(RedBlackTreeNode<T> parent,RedBlackTreeNode<T> node){
+    private void adjustStructure(
+            RedBlackTreeNode<T> parent,
+            RedBlackTreeNode<T> node){
 
         if(parent != null && parent.color == RedBlackTreeNode.COLOR_RED){
+            RedBlackTreeNode<T> grandParent = (RedBlackTreeNode<T>) parent.parent;
+            boolean isGrandParentLeft = grandParent.compareTo(parent.value) > 0;
+            boolean isParentLeft = parent.compareTo(node.value)>0;
+            RedBlackTreeNode<T> uncle = (RedBlackTreeNode<T>) (isGrandParentLeft?grandParent.right:grandParent.left);
+            if(uncle == null || uncle.color == RedBlackTreeNode.COLOR_BLACK){
 
-            if(node.compareTo(parent.value) > 0){
-                rightNode(parent,node);
-            }else {
-                leftNode(parent,node);
-            }
-
-        }
-
-    }
-
-    private void leftNode(RedBlackTreeNode<T> node,RedBlackTreeNode<T> nodeLeft){
-
-        RedBlackTreeNode<T> parent = (RedBlackTreeNode<T>) node.parent;
-        RedBlackTreeNode brother;
-        boolean isLeftNode;
-        if(parent != null){
-
-            if(parent.compareTo(node.value) > 0){
-                isLeftNode = true;
-                brother = (RedBlackTreeNode<T>) parent.right;
-            }else {
-                isLeftNode = false;
-                brother = (RedBlackTreeNode<T>) parent.left;
-            }
-
-            if(brother != null){
-
-                if(brother.color == RedBlackTreeNode.COLOR_RED){
-
-                    if(!isLeftNode){
-                        rightRotate(node);
-                        brother.color = RedBlackTreeNode.COLOR_BLACK;
-                        nodeLeft.color = RedBlackTreeNode.COLOR_BLACK;
-                        node.color = RedBlackTreeNode.COLOR_RED;
+                if(isGrandParentLeft){
+                    if(isParentLeft){
+                        parent.color = RedBlackTreeNode.COLOR_BLACK;
+                        grandParent.color = RedBlackTreeNode.COLOR_RED;
                     }else {
-                        brother.color = RedBlackTreeNode.COLOR_BLACK;
-                        node.color = RedBlackTreeNode.COLOR_RED;
-                        nodeLeft.color = RedBlackTreeNode.COLOR_RED;
+                        node.color = RedBlackTreeNode.COLOR_BLACK;
+                        grandParent.color = RedBlackTreeNode.COLOR_RED;
+                        leftRotate(parent);
                     }
-                    leftRotate(parent);
+                    rightRotate(grandParent);
                 }else {
 
-                    if(isLeftNode){
+                    if(!isParentLeft){
+                        parent.color = RedBlackTreeNode.COLOR_BLACK;
+                        grandParent.color = RedBlackTreeNode.COLOR_RED;
+                    }else {
                         node.color = RedBlackTreeNode.COLOR_BLACK;
-                        parent.color = RedBlackTreeNode.COLOR_RED;
+                        grandParent.color = RedBlackTreeNode.COLOR_RED;
                         rightRotate(parent);
-                    }else {
-                        rightRotate(node);
-                        leftRotate(parent);
-                        node.color = RedBlackTreeNode.COLOR_BLACK;
-                        parent.color = RedBlackTreeNode.COLOR_RED;
                     }
+                    leftRotate(grandParent);
                 }
             }else {
-//                parent.color = RedBlackTreeNode.COLOR_BLACK;
-//                root.color = RedBlackTreeNode.COLOR_RED;
-                if(isLeftNode){
-                    rightRotate(parent);
-                    parent.color = RedBlackTreeNode.COLOR_RED;
-                    node.color = RedBlackTreeNode.COLOR_BLACK;
-                }else {
-                    leftRotate(parent);
-                    parent.color = RedBlackTreeNode.COLOR_RED;
-                    node.color = RedBlackTreeNode.COLOR_BLACK;
+                uncle.color = RedBlackTreeNode.COLOR_BLACK;
+                parent.color = RedBlackTreeNode.COLOR_BLACK;
+                RedBlackTreeNode<T> grandParentParent = (RedBlackTreeNode<T>) grandParent.parent;
+                //判断是不是根结点
+                if(grandParentParent != null){
+                    grandParent.color = RedBlackTreeNode.COLOR_RED;
+                    adjustStructure(grandParentParent,grandParent);
                 }
             }
-            adjustStructure((RedBlackTreeNode<T>) parent.parent,parent);
         }
     }
-
-    private void rightNode(RedBlackTreeNode<T> node,RedBlackTreeNode<T> rightNode){
-
-        RedBlackTreeNode<T> parent = (RedBlackTreeNode<T>) node.parent;
-        RedBlackTreeNode brother;
-        boolean isRightNode;
-        if(parent != null){
-            if(parent.color == RedBlackTreeNode.COLOR_RED){
-                return;
-            }
-            if(parent.compareTo(node.value) > 0){
-                isRightNode = false;
-                brother = (RedBlackTreeNode<T>) parent.right;
-            }else {
-                isRightNode = true;
-                brother = (RedBlackTreeNode<T>) parent.left;
-            }
-
-            if(brother != null){
-
-                if(brother.color == RedBlackTreeNode.COLOR_RED){
-
-                    if(isRightNode){
-                        brother.color = RedBlackTreeNode.COLOR_BLACK;
-                        node.color = RedBlackTreeNode.COLOR_BLACK;
-                        parent.color = RedBlackTreeNode.COLOR_RED;
-                        leftRotate(parent);
-                    }else {
-                        leftRotate(node);
-                        rightRotate(parent);
-
-                        rightNode.color = RedBlackTreeNode.COLOR_BLACK;
-                        brother.color = RedBlackTreeNode.COLOR_BLACK;
-                        parent.color = RedBlackTreeNode.COLOR_RED;
-                        node.color = RedBlackTreeNode.COLOR_RED;
-                    }
-//
-                }else {
-
-                    if(isRightNode){
-                        leftRotate(parent);
-                        node.color = RedBlackTreeNode.COLOR_BLACK;
-                        parent.color = RedBlackTreeNode.COLOR_RED;
-//                        rightRotate(parent);
-//                        node.color = RedBlackTreeNode.COLOR_BLACK;
-//                        grandParent.color = RedBlackTreeNode.COLOR_RED;
-
-                    }else {
-
-                        rightRotate(node);
-                        leftRotate(parent);
-
-                        rightNode.color = RedBlackTreeNode.COLOR_BLACK;
-                        parent.color = RedBlackTreeNode.COLOR_RED;
-                        node.color = RedBlackTreeNode.COLOR_RED;
-                    }
-                }
-            }else {
-//                parent.color = RedBlackTreeNode.COLOR_BLACK;
-//                root.color = RedBlackTreeNode.COLOR_RED;
-                if(isRightNode){
-                    leftRotate(parent);
-                    node.color = RedBlackTreeNode.COLOR_BLACK;
-                    parent.color = RedBlackTreeNode.COLOR_RED;
-//                        rightRotate(parent);
-//                        node.color = RedBlackTreeNode.COLOR_BLACK;
-//                        grandParent.color = RedBlackTreeNode.COLOR_RED;
-
-                }else {
-
-                    rightRotate(node);
-                    leftRotate(parent);
-
-                    rightNode.color = RedBlackTreeNode.COLOR_BLACK;
-                    parent.color = RedBlackTreeNode.COLOR_RED;
-                    node.color = RedBlackTreeNode.COLOR_RED;
-                }
-
-            }
-            adjustStructure((RedBlackTreeNode<T>) parent.parent,parent);
-        }
-
-    }
-
     private void leftRotate(RedBlackTreeNode<T> node){
 
         if(node == null) return;
 
-        TreeNode right = node.right;
-        TreeNode parent = node.parent;
+        RedBlackTreeNode<T> right = (RedBlackTreeNode<T>) node.right;
+        RedBlackTreeNode<T> parent = (RedBlackTreeNode<T>) node.parent;
 
         right.parent = parent;
         if(parent != null){
@@ -265,7 +147,7 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
                 return;
             }
         }else {
-            mRoot = (RedBlackTreeNode<T>) right;
+            mRoot = right;
         }
 
         node.right = right.left;
@@ -281,8 +163,8 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
 
         if(node == null) return;
 
-        TreeNode parent = node.parent;
-        TreeNode left = node.left;
+        RedBlackTreeNode<T> parent = (RedBlackTreeNode<T>) node.parent;
+        RedBlackTreeNode<T> left = (RedBlackTreeNode<T>) node.left;
 
         left.parent = parent;
         if(parent != null){
@@ -295,7 +177,7 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
                 return;
             }
         }else {
-            mRoot = (RedBlackTreeNode<T>) left;
+            mRoot = left;
         }
 
         node.left = left.right;
@@ -317,8 +199,4 @@ public class RedBlackTree<T extends Comparable<T>> implements ITreeFactory<T>{
         int color;
 
     }
-
-
-
-
 }
