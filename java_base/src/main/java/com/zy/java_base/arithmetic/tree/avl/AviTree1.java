@@ -5,6 +5,11 @@ import com.zy.java_base.arithmetic.factory.TreeNode;
 
 import java.util.Arrays;
 
+/**
+ * 2020/5/12-2020/5/13 花费时间：24小时
+ * 生成AVL树成功
+ * @param <T>
+ */
 public class AviTree1<T extends Comparable<T>> implements ITreeFactory<T> {
 
     private TreeNode<T> mRoot;
@@ -153,12 +158,12 @@ public class AviTree1<T extends Comparable<T>> implements ITreeFactory<T> {
         }else {
             TreeNode<T> rightChild = right.left;
             if(rightChild.weight < 0){
-                parent.weight = ER;
+                parent.weight = EL;
                 right.weight = EQ;
                 rightChild.weight = EQ;
             }else {
                 parent.weight = EQ;
-                right.weight = EL;
+                right.weight = ER;
                 rightChild.weight = EQ;
             }
             rightRotate(right);

@@ -14,6 +14,7 @@ import com.zy.java_base.arithmetic.sort.quick.QuickSort4;
 import com.zy.java_base.arithmetic.sort.select.SelectSort2;
 import com.zy.java_base.arithmetic.sort.shell.ShellSort2;
 import com.zy.java_base.arithmetic.tree.avl.AviTree1;
+import com.zy.java_base.arithmetic.tree.avl.AvlTree0;
 import com.zy.java_base.arithmetic.tree.human.HumanTree;
 import com.zy.java_base.arithmetic.tree.redblack.RedBlackTree;
 import com.zy.java_base.utils.PrintUtils;
@@ -182,8 +183,8 @@ public class ArithmeticTest {
         int num = arrays[0];
 
         long start = System.currentTimeMillis();
-//        AvlTree0 aviSelect = ArithmeticFactory.createClass(AvlTree0.class);
-//        aviSelect.select(arrays, num);
+        AvlTree0 aviSelect = ArithmeticFactory.createClass(AvlTree0.class);
+        aviSelect.select(arrays, num);
 
 
         AviTree1<Integer> aviSelect1 = new AviTree1<>();

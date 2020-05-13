@@ -8,10 +8,8 @@ import java.util.Arrays;
 /**
  * 2020/5/2  花费时间10小时
  *
- * 问题：
- *
- *
- *
+ * 这个有问题，生成的AVL树错误
+
  */
 public class AvlTree0 implements ISelectFactory {
 
