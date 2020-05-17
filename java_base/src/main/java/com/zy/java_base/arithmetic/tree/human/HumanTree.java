@@ -122,7 +122,5 @@ public class HumanTree<T extends Comparable<T>> implements ITreeFactory<T> {
         while (rr < rightSize){
             datas.set(dd++,rightArray.get(rr++));
         }
-        
     }
-
 }
